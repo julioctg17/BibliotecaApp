@@ -5,13 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.IO;
+using System.Text.Json;
 
 namespace BibliotecaApp
 {
     public partial class Gestion : Form
     {
-        private DoublyLinkedList<Book> libros;
-        private Form1 formPrincipal;
+        private readonly DoublyLinkedList<Book> libros;
+        private readonly Form1 formPrincipal;
 
         public Gestion(Form1 form, DoublyLinkedList<Book> libros)
         {
@@ -20,65 +22,63 @@ namespace BibliotecaApp
             this.libros = libros;
         }
 
-        private void groupBox2_Enter(object sender, EventArgs e)
+        private void Gestion_Load(object sender, EventArgs e)
         {
-
+            // Mostrar los libros al abrir la ventana
+            RefrescarLista(libros);
         }
 
+        // 🔹 Refresca el ListBox con los libros actuales
+        public void RefrescarLista(DoublyLinkedList<Book> listaLibros)
+        {
+            lstLibros.Items.Clear();
+            foreach (var libro in listaLibros.TraverseForward())
+                lstLibros.Items.Add(libro.ToString());
+        }
+
+        // 🔹 Mostrar todos los libros
+        private void btnMostrar_Click(object sender, EventArgs e)
+        {
+            RefrescarLista(libros);
+        }
+
+        // 🔹 Buscar por título o autor
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            var texto = txtBuscar.Text.Trim();
-            if (texto == "")
+            string texto = txtBuscar.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(texto))
             {
                 MessageBox.Show("Introduce un título o autor para buscar.");
                 return;
             }
 
-            // Buscar coincidencias por título o autor (versión compatible)
+            // Usamos IndexOf con StringComparison para soportar .NET Framework
             var resultado = Algorithms.LinearSearch(libros, l =>
-                l.Title.ToLower().Contains(texto.ToLower()) ||
-                l.Author.ToLower().Contains(texto.ToLower()));
+                (l.Title != null && l.Title.IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                (l.Author != null && l.Author.IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0)
+            );
 
             lstLibros.Items.Clear();
-            foreach (var l in resultado)
-                lstLibros.Items.Add(l.ToString());
+            foreach (var libro in resultado)
+                lstLibros.Items.Add(libro.ToString());
         }
 
+        // 🔹 Ordenar por título (usa BubbleSort)
         private void btnOrdenarTitulo_Click(object sender, EventArgs e)
         {
             Algorithms.BubbleSort(libros, Algorithms.CompareByTitle);
-            btnMostrar_Click(sender, e);
+            RefrescarLista(libros);
         }
 
+        // 🔹 Ordenar por año (usa QuickSort para cumplir requisito del profesor)
         private void btnOrdenarAnio_Click(object sender, EventArgs e)
         {
-            Algorithms.BubbleSort(libros, Algorithms.CompareByYear);
-            btnMostrar_Click(sender, e);
+            Algorithms.QuickSort(libros, Algorithms.CompareByYear);
+            RefrescarLista(libros);
         }
 
-        private void lstLibros_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnMostrar_Click(object sender, EventArgs e)
-        {
-            lstLibros.Items.Clear();
-            foreach (var l in libros.TraverseForward())
-                lstLibros.Items.Add(l.ToString());
-        }
-
-        private void Gestion_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnRegresar_Click(object sender, EventArgs e)
-        {
-            formPrincipal.Show(); // Vuelve a mostrar el Form1 original
-            this.Close();
-        }
-
+        // 🔹 Registrar préstamo
         private void btnPrestamo_Click(object sender, EventArgs e)
         {
             if (lstLibros.SelectedItem == null)
@@ -87,22 +87,32 @@ namespace BibliotecaApp
                 return;
             }
 
+            // Extrae el ISBN del formato [ISBN] Título - Autor
             string seleccionado = lstLibros.SelectedItem.ToString();
-            // Aquí puedes extraer el ISBN del string seleccionado
             string isbn = seleccionado.Split(']')[0].TrimStart('[');
-            formPrincipal.RegistrarPrestamo(isbn);
 
+            formPrincipal.RegistrarPrestamo(isbn);
+            RefrescarLista(libros);
         }
 
+        // 🔹 Registrar devolución
         private void btnDevolucion_Click(object sender, EventArgs e)
         {
             formPrincipal.RegistrarDevolucion();
+            RefrescarLista(libros);
         }
 
+        // 🔹 Mostrar historial
         private void btnHistorial_Click(object sender, EventArgs e)
         {
             formPrincipal.MostrarHistorial(lstLibros);
+        }
 
+        // 🔹 Regresar al menú principal
+        private void btnRegresar_Click(object sender, EventArgs e)
+        {
+            formPrincipal.Show();
+            this.Close();
         }
     }
 }

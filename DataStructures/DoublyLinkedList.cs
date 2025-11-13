@@ -47,5 +47,37 @@ namespace BibliotecaApp.DataStructures
 
         public DNode<T> First => head;
         public DNode<T> Last => tail;
+
+        // ✅ Nuevo método: convierte la lista en una List<T>
+        public List<T> ToList()
+        {
+            var list = new List<T>();
+            var current = head;
+            while (current != null)
+            {
+                list.Add(current.Data);
+                current = current.Next;
+            }
+            return list;
+        }
+
+        // ✅ Nuevo método: limpia completamente la lista
+        public void Clear()
+        {
+            head = null;
+            tail = null;
+            Count = 0;
+        }
+
+        // ✅ Nuevo método: agrega una colección completa al final de la lista
+        public void AddRange(IEnumerable<T> items)
+        {
+            foreach (var item in items)
+            {
+                AddLast(item);
+            }
+        }
+
+
     }
 }

@@ -59,21 +59,20 @@
             this.groupBox2.Controls.Add(this.btnOrdenarAnio);
             this.groupBox2.Location = new System.Drawing.Point(32, 38);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(503, 297);
+            this.groupBox2.Size = new System.Drawing.Size(671, 297);
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Gestionar Libros";
-            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // lstLibros
             // 
             this.lstLibros.FormattingEnabled = true;
+            this.lstLibros.HorizontalScrollbar = true;
             this.lstLibros.ItemHeight = 16;
             this.lstLibros.Location = new System.Drawing.Point(20, 126);
             this.lstLibros.Name = "lstLibros";
-            this.lstLibros.Size = new System.Drawing.Size(466, 84);
+            this.lstLibros.Size = new System.Drawing.Size(619, 84);
             this.lstLibros.TabIndex = 13;
-            this.lstLibros.SelectedIndexChanged += new System.EventHandler(this.lstLibros_SelectedIndexChanged);
             // 
             // txtBuscar
             // 
@@ -93,7 +92,7 @@
             // 
             // btnMostrar
             // 
-            this.btnMostrar.Location = new System.Drawing.Point(185, 228);
+            this.btnMostrar.Location = new System.Drawing.Point(265, 230);
             this.btnMostrar.Name = "btnMostrar";
             this.btnMostrar.Size = new System.Drawing.Size(126, 23);
             this.btnMostrar.TabIndex = 6;
@@ -103,7 +102,7 @@
             // 
             // btnBuscar
             // 
-            this.btnBuscar.Location = new System.Drawing.Point(20, 83);
+            this.btnBuscar.Location = new System.Drawing.Point(41, 83);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(126, 23);
             this.btnBuscar.TabIndex = 7;
@@ -113,9 +112,9 @@
             // 
             // btnOrdenarTitulo
             // 
-            this.btnOrdenarTitulo.Location = new System.Drawing.Point(185, 83);
+            this.btnOrdenarTitulo.Location = new System.Drawing.Point(236, 83);
             this.btnOrdenarTitulo.Name = "btnOrdenarTitulo";
-            this.btnOrdenarTitulo.Size = new System.Drawing.Size(126, 23);
+            this.btnOrdenarTitulo.Size = new System.Drawing.Size(173, 23);
             this.btnOrdenarTitulo.TabIndex = 8;
             this.btnOrdenarTitulo.Text = "Ordenar por título";
             this.btnOrdenarTitulo.UseVisualStyleBackColor = true;
@@ -123,7 +122,7 @@
             // 
             // btnOrdenarAnio
             // 
-            this.btnOrdenarAnio.Location = new System.Drawing.Point(360, 83);
+            this.btnOrdenarAnio.Location = new System.Drawing.Point(481, 83);
             this.btnOrdenarAnio.Name = "btnOrdenarAnio";
             this.btnOrdenarAnio.Size = new System.Drawing.Size(126, 23);
             this.btnOrdenarAnio.TabIndex = 9;
@@ -146,7 +145,7 @@
             this.groupBox3.Controls.Add(this.btnHistorial);
             this.groupBox3.Controls.Add(this.btnPrestamo);
             this.groupBox3.Controls.Add(this.btnDevolucion);
-            this.groupBox3.Location = new System.Drawing.Point(580, 53);
+            this.groupBox3.Location = new System.Drawing.Point(751, 54);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(240, 270);
             this.groupBox3.TabIndex = 23;
@@ -186,7 +185,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(852, 264);
+            this.pictureBox1.Location = new System.Drawing.Point(1155, 310);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(133, 155);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -198,7 +197,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Info;
-            this.ClientSize = new System.Drawing.Size(1058, 450);
+            this.ClientSize = new System.Drawing.Size(1330, 477);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnRegresar);

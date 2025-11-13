@@ -9,6 +9,7 @@ namespace BibliotecaApp.Models
         public string Author { get; set; }
         public int Year { get; set; }
         public bool IsAvailable { get; set; } = true;
+        public string PrestadoA { get; set; } = null;
 
         public Book() { }
 
@@ -23,7 +24,8 @@ namespace BibliotecaApp.Models
 
         public override string ToString()
         {
-            return $"[{ISBN}] {Title} - {Author} ({Year}) - {(IsAvailable ? "Disponible" : "Prestado")}";
+            string estado = IsAvailable ? "Disponible" : $"Prestado a {PrestadoA}";
+            return $"[{ISBN}] {Title} - {Author} ({Year}) → {estado}";
         }
     }
 }
