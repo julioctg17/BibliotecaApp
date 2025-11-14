@@ -15,6 +15,7 @@ namespace BibliotecaApp
         private readonly DoublyLinkedList<Book> libros;
         private readonly Form1 formPrincipal;
 
+
         public Gestion(Form1 form, DoublyLinkedList<Book> libros)
         {
             InitializeComponent();
