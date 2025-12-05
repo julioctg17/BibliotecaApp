@@ -3,30 +3,53 @@ using BibliotecaApp.Models;
 using BibliotecaApp.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Windows.Forms;
+using static System.Collections.Specialized.BitVector32;
 
 namespace BibliotecaApp
 {
     public partial class Gestion : Form
     {
         private readonly DoublyLinkedList<Book> libros;
+        private readonly List<Prestamo> prestamos;
+        private readonly SimpleStack<Book> devoluciones;
         private readonly Form1 formPrincipal;
 
 
-        public Gestion(Form1 form, DoublyLinkedList<Book> libros)
+        public Gestion(
+    Form1 formPrincipal,
+    DoublyLinkedList<Book> libros,
+    List<Prestamo> prestamos,
+    SimpleStack<Book> devoluciones
+)
         {
             InitializeComponent();
-            this.formPrincipal = form;
+            this.formPrincipal = formPrincipal;
             this.libros = libros;
+            this.prestamos = prestamos;
+            this.devoluciones = devoluciones;
+           
+
+            RefrescarComboPrestamos();
         }
 
         private void Gestion_Load(object sender, EventArgs e)
         {
             // Mostrar los libros al abrir la ventana
             RefrescarLista(libros);
+            RefrescarComboPrestamos();
+            CargarUsuarios();
+        }
+
+        private void CargarUsuarios()
+        {
+            comboBoxUsuarios.DataSource = formPrincipal.Usuarios;
+            comboBoxUsuarios.DisplayMember = "NombreCompleto";    // Lo que se ve
+            comboBoxUsuarios.ValueMember = "Matricula";   // Lo que se usa internamente
+            comboBoxUsuarios.SelectedIndex = -1;          // Para que no seleccione nada por defecto
         }
 
         // 🔹 Refresca el ListBox con los libros actuales
@@ -72,7 +95,7 @@ namespace BibliotecaApp
             RefrescarLista(libros);
         }
 
-        // 🔹 Ordenar por año (usa QuickSort para cumplir requisito del profesor)
+        // 🔹 Ordenar por año 
         private void btnOrdenarAnio_Click(object sender, EventArgs e)
         {
             Algorithms.QuickSort(libros, Algorithms.CompareByYear);
@@ -92,15 +115,37 @@ namespace BibliotecaApp
             string seleccionado = lstLibros.SelectedItem.ToString();
             string isbn = seleccionado.Split(']')[0].TrimStart('[');
 
-            formPrincipal.RegistrarPrestamo(isbn);
+            // Obtiene la matrícula del usuario seleccionado
+            string matricula = comboBoxUsuarios.SelectedValue.ToString();
+
+            // Llamamos al método de registro de préstamo pasando el ISBN y la matrícula
+            formPrincipal.RegistrarPrestamo(isbn, matricula);
+
             RefrescarLista(libros);
+            RefrescarComboPrestamos();
         }
 
         // 🔹 Registrar devolución
         private void btnDevolucion_Click(object sender, EventArgs e)
         {
-            formPrincipal.RegistrarDevolucion();
+            if (cmbPrestamos.SelectedItem == null)
+            {
+                MessageBox.Show("Selecciona un préstamo para devolver.");
+                return;
+            }
+
+            string texto = cmbPrestamos.SelectedItem.ToString();
+            string titulo = texto.Split('→')[0].Trim();
+
+            BibliotecaService.RegistrarDevolucion(
+                prestamos,
+                libros,
+                devoluciones,
+                titulo
+            );
+
             RefrescarLista(libros);
+            RefrescarComboPrestamos();
         }
 
         // 🔹 Mostrar historial
@@ -114,6 +159,36 @@ namespace BibliotecaApp
         {
             formPrincipal.Show();
             this.Close();
+        }
+
+        private void btnPrestamosActuales_Click(object sender, EventArgs e)
+        {
+            lstLibros.Items.Clear();
+
+            foreach (var p in prestamos)
+            {
+                lstLibros.Items.Add($"Libro: {p.Libro} | Prestado a: {p.Usuario} | Fecha: {p.FechaPrestamo.ToShortDateString()}");
+            }
+
+            if (lstLibros.Items.Count == 0)
+                lstLibros.Items.Add("No hay préstamos activos.");
+        }
+
+        public void RefrescarComboPrestamos()
+        {
+            cmbPrestamos.Items.Clear();
+            cmbPrestamos.Text = "";   // ← LIMPIA EL TEXTO MOSTRADO
+
+            foreach (var p in prestamos)
+                cmbPrestamos.Items.Add($"{p.Libro} → {p.Usuario}");
+
+            if (cmbPrestamos.Items.Count > 0)
+                cmbPrestamos.SelectedIndex = 0;
+        }
+
+        private void comboBoxUsuarios_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
